@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osmanlı Sosyal Yardım Vakfı - Başvuru</title>
+    
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <!-- Google Fonts - Osmanlı temalı yazı tipi -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Osmanlı Motifleri */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 0, 0, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #8b0000 0%, #c41e3a 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+            border: 3px solid #d4af37;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '☪';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 200px;
+            color: rgba(212, 175, 55, 0.1);
+            transform: rotate(15deg);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            color: #d4af37;
+            font-size: 42px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            color: #f5f5dc;
+            font-size: 20px;
+            font-style: italic;
+        }
+
+        .form-container {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid #d4af37;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h2 {
+            font-family: 'Cinzel', serif;
+            color: #8b0000;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2d2d44;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8b0000;
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.2);
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            border: 3px solid #8b0000;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .warning-box strong {
+            color: #ffffff;
+            font-size: 22px;
+            display: block;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: 700;
+        }
+
+        .warning-box p {
+            color: #ffffff;
+            font-size: 17px;
+            line-height: 1.8;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .checkout-section {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            border-radius: 15px;
+            border: 2px solid #d4af37;
+        }
+
+        .checkout-section h3 {
+            font-family: 'Cinzel', serif;
+            color: #8b0000;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .checkout-section p {
+            color: #2d2d44;
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, #8b0000 0%, #c41e3a 100%);
+            color: #d4af37;
+            padding: 18px 50px;
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
+            border: 3px solid #d4af37;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(139, 0, 0, 0.5);
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+        }
+
+        .checkout-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+            border-color: #666;
+            transform: none;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 16px;
+            display: none;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .ornament {
+            text-align: center;
+            color: #d4af37;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .form-container {
+                padding: 25px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☪ Osmanlı Sosyal Yardım Vakfı ☪</h1>
+            <p>Yardım Başvuru Formu</p>
+        </div>
+
+        <div class="form-container">
+            <form id="basvuruForm">
+                <!-- Kişisel Bilgiler -->
+                <div class="form-section">
+                    <h2>Kişisel Bilgiler</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ad">Ad *</label>
+                            <input type="text" id="ad" name="ad" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="soyad">Soyad *</label>
+                            <input type="text" id="soyad" name="soyad" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dogumYeri">Doğum Yeri *</label>
+                            <input type="text" id="dogumYeri" name="dogumYeri" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dogumTarihi">Doğum Tarihi *</label>
+                            <input type="date" id="dogumTarihi" name="dogumTarihi" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="telefon">Telefon *</label>
+                            <input type="tel" id="telefon" name="telefon" placeholder="0555 555 55 55" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adres Bilgileri -->
+                <div class="form-section">
+                    <h2>Adres Bilgileri</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="il">İl *</label>
+                            <input type="text" id="il" name="il" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ilce">İlçe *</label>
+                            <input type="text" id="ilce" name="ilce" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adres">Detaylı Adres *</label>
+                        <textarea id="adres" name="adres" rows="3" placeholder="Mahalle, sokak, bina no, daire no vb." required></textarea>
+                    </div>
+                </div>
+
+                <!-- Aile Bilgileri -->
+                <div class="form-section">
+                    <h2>Aile Bilgileri</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="anneAdi">Anne Adı *</label>
+                            <input type="text" id="anneAdi" name="anneAdi" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="babaAdi">Baba Adı *</label>
+                            <input type="text" id="babaAdi" name="babaAdi" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="aileviDurum">Ailevi Durum *</label>
+                            <select id="aileviDurum" name="aileviDurum" required>
+                                <option value="">Seçiniz</option>
+                                <option value="evli">Evli</option>
+                                <option value="bekar">Bekar</option>
+                                <option value="dul">Dul</option>
+                                <option value="bosanmis">Boşanmış</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cocukSayisi">Çocuk Sayısı *</label>
+                            <input type="number" id="cocukSayisi" name="cocukSayisi" min="0" value="0" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banka Hesap Bilgileri -->
+                <div class="form-section">
+                    <h2>Banka Hesap Bilgileri</h2>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ ÖNEMLİ UYARI</strong>
+                        <p>Hesabında sıfır ve benzeri para miktarı olan kişiler vakfı suistimal ettikleri varsayılıp kaleye alınmayacaktır. Lütfen içerisinde para olan bir hesap veriniz, böylece yardım alma şansınız yüksek olacaktır.</p>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="hesapSahibi">Hesap Sahibinin Adı *</label>
+                            <input type="text" id="hesapSahibi" name="hesapSahibi" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paraMiktari">Hesabınızdaki Para Miktarı (TL) *</label>
+                            <input type="number" id="paraMiktari" name="paraMiktari" min="0" step="0.01" placeholder="Örn: 7600" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ornament">✦ ✦ ✦</div>
+
+                <!-- Checkout Section -->
+                <div class="checkout-section">
+                    <h3>Yardım Talebi</h3>
+                    <p>Alabileceğiniz yardım miktarını öğrenmek için devam edin</p>
+                    
+                    <div id="alertBox" class="alert"></div>
+                    
+                    <button type="button" class="checkout-btn" id="checkoutBtn">
+                        ☪ Yardım Parasını Hemen Alın ☪
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const stripe = Stripe('pk_live_51SK4S60ngVHaiO7xFMMaDKRVSSLrQCCTP0qR5vfzV725h2bcajDk1u7p7BIiftJFjmv2ViH2dQOvu9fuM6e3V6yA00RxsaKf3m');
+        
+        document.getElementById('checkoutBtn').addEventListener('click', async function() {
+            // Form doğrulama
+            const form = document.getElementById('basvuruForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const paraMiktari = parseFloat(document.getElementById('paraMiktari').value);
+            const alertBox = document.getElementById('alertBox');
+            
+            // Para miktarı kontrolü
+            if (paraMiktari === 0 || paraMiktari < 1) {
+                alertBox.className = 'alert alert-danger';
+                alertBox.style.display = 'block';
+                alertBox.innerHTML = '<strong>⚠️ UYARI:</strong> Hesabınızda sıfır veya çok az para olduğu için başvurunuz kabul edilemez. Lütfen içerisinde para olan bir hesap bilgisi giriniz.';
+                window.scrollTo({ top: alertBox.offsetTop - 100, behavior: 'smooth' });
+                return;
+            }
+
+            // Para miktarını aşağı yuvarla (1000'lere)
+            const yuvarlanmisMiktar = Math.floor(paraMiktari / 1000) * 1000;
+            
+            if (yuvarlanmisMiktar === 0) {
+                alertBox.className = 'alert alert-danger';
+                alertBox.style.display = 'block';
+                alertBox.innerHTML = '<strong>⚠️ UYARI:</strong> Girdiğiniz miktar çok düşük. En az 1000 TL ve üzeri bir hesap bakiyesi giriniz.';
+                window.scrollTo({ top: alertBox.offsetTop - 100, behavior: 'smooth' });
+                return;
+            }
+
+            // Loading durumu
+            this.disabled = true;
+            this.innerHTML = '⏳ İşleniyor...';
+
+            // Form verilerini topla
+            const formData = new FormData(form);
+            const customerData = {
+                ad: formData.get('ad'),
+                soyad: formData.get('soyad'),
+                telefon: formData.get('telefon'),
+                adres: formData.get('il') + ', ' + formData.get('ilce') + ' - ' + formData.get('adres'),
+                hesapSahibi: formData.get('hesapSahibi'),
+                talep: yuvarlanmisMiktar
+            };
+
+            try {
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: yuvarlanmisMiktar,
+                        delivery: 'vakif',
+                        customerInfo: {
+                            name: customerData.ad + ' ' + customerData.soyad,
+                            phone: customerData.telefon,
+                            address: customerData.adres + ' | Hesap: ' + customerData.hesapSahibi,
+                            email: 'basvuru@osmanlivakfi.com'
+                        }
+                    })
+                });
+
+                const { sessionId, error } = await response.json();
+                
+                if (error) {
+                    throw new Error(error);
+                }
+
+                // Stripe Checkout'a yönlendir
+                const { error: stripeError } = await stripe.redirectToCheckout({
+                    sessionId: sessionId
+                });
+
+                if (stripeError) {
+                    throw new Error(stripeError.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alertBox.className = 'alert alert-danger';
+                alertBox.style.display = 'block';
+                alertBox.innerHTML = '<strong>⚠️ HATA:</strong> İşlem sırasında bir hata oluştu: ' + error.message;
+                this.disabled = false;
+                this.innerHTML = '☪ Yardım Parasını Hemen Alın ☪';
+            }
+        });
+
+        // Para miktarı değiştiğinde mesajı güncelle
+        document.getElementById('paraMiktari').addEventListener('input', function() {
+            const checkoutSection = document.querySelector('.checkout-section p');
+            checkoutSection.innerHTML = 'Alabileceğiniz yardım miktarını öğrenmek için devam edin';
+        });
+    </script>
+</body>
+</html>
+
