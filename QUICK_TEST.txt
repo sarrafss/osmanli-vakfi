@@ -1,0 +1,67 @@
+TÜRKİYE DOMAIN BLOCK HIZLI TEST
+==================================
+
+ADIM 1: DNS TEST (Bulgaristan'dan)
+------------------------------------
+Windows PowerShell'de şunu çalıştırın:
+
+Resolve-DnsName osmanlisosyalyardimvakfi.com
+
+SONUÇ: ___________________________________
+
+
+ADIM 2: BULGARİSTAN ERİŞİM
+----------------------------------
+Bu linki tarayıcıda açın:
+https://osmanlisosyalyardimvakfi.com
+
+Açılıyor mu? [EVET / HAYIR]
+Hata varsa ne diyor? __________________________________
+
+
+ADIM 3: TÜRKİYE ERİŞİM (EĞER VARSANIZ)
+----------------------------------
+Aynı linki Türkiye'den açın:
+https://osmanlisosyalyardimvakfi.com
+
+Açılıyor mu? [EVET / HAYIR]
+Operatör nedir? [Turkcell / Turktelekom / Vodafone / WiFi]
+Hata varsa tam mesajı yazın:
+__________________________________
+__________________________________
+
+
+ADIM 4: CLOUDFLARE KONTROLÜ
+----------------------------------
+https://dash.cloudflare.com → Sites → osmanlisosyalyardimvakfi.com
+→ DNS → Records
+
+Tüm kayıtlar ☁️ (Proxied) mi? [EVET / HAYIR]
+
+A Record IP nedir?
+[ ] 216.198.79.1  ← Doğru
+[ ] 76.76.21.21   ← Eski (hala çalışır ama yavaş olabilir)
+[ ] Başka IP: ____________
+
+
+ADIM 5: ONLINE TEST
+----------------------------------
+Bu linklere gidin ve sonucu paylaşın:
+
+1. https://www.isitdownrightnow.com/osmanlisosyalyardimvakfi.com.html
+   Sonuç: __________________________________
+
+2. https://downforeveryoneorjustme.com/osmanlisosyalyardimvakfi.com
+   Sonuç: __________________________________
+
+
+SONUÇ DEĞERLENDİRME:
+----------------------------------
+Bulgaristan'da açılıyor + Türkiye'de açılmıyor = %99 BLOCK
+
+Bulgaristan'da açılıyor + Cloudflare ☁️ açık + DNS doğru = 
+  → Block olabilir, alternatif domain lazım
+
+Her yerde yavaş/SSL hatası = 
+  → DNS/SSL sorunu, Cloudflare ayarları kontrol edilmeli
+
