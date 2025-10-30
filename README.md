@@ -15,6 +15,16 @@ npm start
 vercel --prod
 ```
 
+## Environment Variables
+
+Vercel Dashboard'da şu environment variable'ı ekleyin:
+
+- **Name:** `STRIPE_SECRET_KEY`
+- **Value:** Stripe Dashboard → Developers → API keys → Secret key
+- **Environments:** Production, Preview, Development
+
+⚠️ **Önemli:** Environment variable ekledikten sonra **Redeploy** yapın!
+
 ## Özellikler
 
 - ☪ Osmanlı temalı modern tasarım
