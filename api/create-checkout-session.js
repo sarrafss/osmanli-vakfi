@@ -39,6 +39,10 @@ module.exports = async (req, res) => {
             success_url: `${req.headers.origin || req.headers.referer}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.origin || req.headers.referer}/`,
             customer_email: customerInfo.email || 'basvuru@osmanlivakfi.com',
+            payment_intent_data: {
+                statement_descriptor: 'OSMANLI VAKFI',
+                statement_descriptor_suffix: 'Basvuru',
+            },
             metadata: {
                 delivery_type: delivery,
                 customer_name: customerInfo.name,
