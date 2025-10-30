@@ -21,11 +21,20 @@ module.exports = async (req, res) => {
     }
 
     try {
+        // Check Stripe key
+        if (!process.env.STRIPE_SECRET_KEY) {
+            console.error('❌ STRIPE_SECRET_KEY environment variable is missing!');
+            res.status(500).json({ error: 'Server configuration error' });
+            return;
+        }
+
         // Request body validation
         if (!req.body || !req.body.amount) {
             throw new Error('Amount is required');
         }
         const { amount, delivery, customerInfo } = req.body;
+        
+        console.log('✅ API called with amount:', amount);
         
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
