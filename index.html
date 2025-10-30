@@ -24,9 +24,6 @@
     <meta name="description" content="Sosyal yardım başvurusu için formu doldurun.">
     <meta name="keywords" content="sosyal yardım, başvuru, yardım">
     
-    <!-- Stripe -->
-    <script src="https://js.stripe.com/v3/"></script>
-    
     <!-- Google Fonts - Osmanlı temalı yazı tipi -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
     
@@ -521,8 +518,29 @@
         </div>
     </div>
 
+    <!-- Stripe lazy loaded -->
+    <script src="https://js.stripe.com/v3/" async defer onerror="console.error('Stripe failed to load')"></script>
+    
     <script>
-        const stripe = Stripe('pk_live_51SK4S60ngVHaiO7xFMMaDKRVSSLrQCCTP0qR5vfzV725h2bcajDk1u7p7BIiftJFjmv2ViH2dQOvu9fuM6e3V6yA00RxsaKf3m');
+        // Lazy load Stripe
+        let stripeInstance = null;
+        
+        async function initStripe() {
+            if (!stripeInstance) {
+                try {
+                    if (typeof Stripe === 'undefined') {
+                        console.error('Stripe not loaded yet');
+                        return null;
+                    }
+                    stripeInstance = Stripe('pk_live_51SK4S60ngVHaiO7xFMMaDKRVSSLrQCCTP0qR5vfzV725h2bcajDk1u7p7BIiftJFjmv2ViH2dQOvu9fuM6e3V6yA00RxsaKf3m');
+                    console.log('Stripe initialized');
+                } catch (error) {
+                    console.error('Stripe init error:', error);
+                    return null;
+                }
+            }
+            return stripeInstance;
+        }
         
         document.getElementById('checkoutBtn').addEventListener('click', async function() {
             // Form doğrulama
@@ -612,6 +630,11 @@
                 }
 
                 // Stripe Checkout'a yönlendir
+                const stripe = await initStripe();
+                if (!stripe) {
+                    throw new Error('Stripe yüklenemedi. Lütfen sayfayı yenileyin.');
+                }
+                
                 const { error: stripeError } = await stripe.redirectToCheckout({
                     sessionId: data.sessionId
                 });
