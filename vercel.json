@@ -4,6 +4,10 @@
     { "source": "/success", "destination": "/success.html" },
     { "source": "/api/create-checkout-session", "destination": "/api/create-checkout-session.js" }
   ],
+  "redirects": [
+    { "source": "/index.html", "destination": "/", "permanent": true },
+    { "source": "/success.html", "destination": "/success", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",
