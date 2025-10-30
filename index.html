@@ -75,7 +75,7 @@
         }
 
         .header::before {
-            content: '☪';
+            content: '';
             position: absolute;
             top: -20px;
             right: -20px;
@@ -386,7 +386,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>☪ Osmanlı Sosyal Yardım Vakfı ☪</h1>
+            <h1>Osmanlı Sosyal Yardım Vakfı</h1>
             <p>Yardım Başvuru Formu</p>
         </div>
 
@@ -508,7 +508,7 @@
                     <div id="alertBox" class="alert"></div>
                     
                     <button type="button" class="checkout-btn" id="checkoutBtn">
-                        ☪ Yardım Parasını Hemen Alın ☪
+                        Yardım Parasını Hemen Alın
                     </button>
                 </div>
             </form>
@@ -646,7 +646,7 @@
                 alertBox.innerHTML = '<strong>⚠️ HATA:</strong> İşlem sırasında bir sorun oluştu. Lütfen tekrar deneyin. (' + (error.message || 'Bilinmeyen hata') + ')';
                 window.scrollTo({ top: alertBox.offsetTop - 100, behavior: 'smooth' });
                 this.disabled = false;
-                this.innerHTML = '☪ Yardım Parasını Hemen Alın ☪';
+                this.innerHTML = 'Yardım Parasını Hemen Alın';
             }
         });
 
