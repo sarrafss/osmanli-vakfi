@@ -16,10 +16,15 @@ module.exports = async (req, res) => {
     }
 
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
+        res.status(405).json({ error: 'Method not allowed' });
+        return;
     }
 
     try {
+        // Request body validation
+        if (!req.body || !req.body.amount) {
+            throw new Error('Amount is required');
+        }
         const { amount, delivery, customerInfo } = req.body;
         
         const session = await stripe.checkout.sessions.create({
@@ -54,7 +59,10 @@ module.exports = async (req, res) => {
         res.status(200).json({ sessionId: session.id });
     } catch (error) {
         console.error('Error creating checkout session:', error);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message || 'Internal server error',
+            details: error.type || 'stripe_error'
+        });
     }
 };
 

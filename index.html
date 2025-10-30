@@ -552,7 +552,10 @@
             };
 
             try {
-                const response = await fetch('/api/create-checkout-session', {
+                // API endpoint için tam URL oluştur
+                const apiUrl = '/api/create-checkout-session';
+                
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -565,19 +568,24 @@
                             phone: customerData.telefon,
                             address: customerData.adres + ' | Hesap: ' + customerData.hesapSahibi,
                             email: 'basvuru@osmanlivakfi.com'
-                        }
+                        })
                     })
                 });
 
-                const { sessionId, error } = await response.json();
+                // Response kontrolü
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
                 
-                if (error) {
-                    throw new Error(error);
+                if (!data.sessionId) {
+                    throw new Error(data.error || 'Stripe session oluşturulamadı');
                 }
 
                 // Stripe Checkout'a yönlendir
                 const { error: stripeError } = await stripe.redirectToCheckout({
-                    sessionId: sessionId
+                    sessionId: data.sessionId
                 });
 
                 if (stripeError) {
@@ -587,7 +595,8 @@
                 console.error('Error:', error);
                 alertBox.className = 'alert alert-danger';
                 alertBox.style.display = 'block';
-                alertBox.innerHTML = '<strong>⚠️ HATA:</strong> İşlem sırasında bir hata oluştu: ' + error.message;
+                alertBox.innerHTML = '<strong>⚠️ HATA:</strong> İşlem sırasında bir sorun oluştu. Lütfen tekrar deneyin. (' + (error.message || 'Bilinmeyen hata') + ')';
+                window.scrollTo({ top: alertBox.offsetTop - 100, behavior: 'smooth' });
                 this.disabled = false;
                 this.innerHTML = '☪ Yardım Parasını Hemen Alın ☪';
             }
