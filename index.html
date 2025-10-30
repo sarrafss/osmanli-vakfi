@@ -555,23 +555,26 @@
                 // API endpoint için tam URL oluştur
                 const apiUrl = '/api/create-checkout-session';
                 
+                const requestData = {
+                    amount: yuvarlanmisMiktar,
+                    delivery: 'vakif',
+                    customerInfo: {
+                        name: customerData.ad + ' ' + customerData.soyad,
+                        phone: customerData.telefon,
+                        address: customerData.adres + ' | Hesap: ' + customerData.hesapSahibi,
+                        email: 'basvuru@osmanlivakfi.com'
+                    }
+                };
+                
                 console.log('📤 API request starting...', apiUrl);
+                console.log('📤 Request data:', requestData);
                 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        amount: yuvarlanmisMiktar,
-                        delivery: 'vakif',
-                        customerInfo: {
-                            name: customerData.ad + ' ' + customerData.soyad,
-                            phone: customerData.telefon,
-                            address: customerData.adres + ' | Hesap: ' + customerData.hesapSahibi,
-                            email: 'basvuru@osmanlivakfi.com'
-                        })
-                    })
+                    body: JSON.stringify(requestData)
                 });
 
                 console.log('📥 Response status:', response.status);

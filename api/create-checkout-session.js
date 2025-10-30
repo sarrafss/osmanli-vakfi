@@ -1,4 +1,4 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe');
 
 module.exports = async (req, res) => {
     // CORS headers
@@ -28,15 +28,25 @@ module.exports = async (req, res) => {
             return;
         }
 
+        // Initialize Stripe with key
+        const stripeClient = stripe(process.env.STRIPE_SECRET_KEY);
+
         // Request body validation
+        console.log('📥 Request body:', JSON.stringify(req.body));
+        
         if (!req.body || !req.body.amount) {
-            throw new Error('Amount is required');
+            console.error('❌ Amount missing!');
+            res.status(400).json({ 
+                error: 'Bad Request - Amount is required',
+                received: req.body 
+            });
+            return;
         }
         const { amount, delivery, customerInfo } = req.body;
         
         console.log('✅ API called with amount:', amount);
         
-        const session = await stripe.checkout.sessions.create({
+        const session = await stripeClient.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [{
                 price_data: {
