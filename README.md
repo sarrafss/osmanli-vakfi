@@ -35,8 +35,10 @@ Türkiye'den erişim engeli varsa Cloudflare DNS kullanın:
 **3. Cloudflare DNS Kayıtları:**
 1. Cloudflare Dashboard → DNS → Records
 2. Şunları ekleyin:
-   - **A Record:** `@` → `76.76.21.21` (Proxied: ON ☁️)
-   - **CNAME:** `www` → `cname.vercel-dns.com` (Proxied: ON ☁️)
+   - **A Record:** `@` → `216.198.79.1` (Proxied: ON ☁️)
+   - **CNAME:** `www` → `0d6539917c955e92.vercel-dns-017.com.` (Proxied: ON ☁️)
+
+⚠️ **Vercel'in yeni IP adresi:** `216.198.79.1` (eski: `76.76.21.21` hala çalışıyor ama yeni IP önerilir)
 
 **4. Vercel'de Domain Doğrula:**
 1. Vercel Dashboard → Settings → Domains
@@ -51,9 +53,9 @@ Türkiye'den erişim engeli varsa Cloudflare DNS kullanın:
 
 **Namecheap Advanced DNS:**
 1. https://www.namecheap.com → Your Domain → Manage → Advanced DNS
-2. **Eski kayıtlar:**
-   - **A Record:** `@` → `76.76.21.21`
-   - **CNAME:** `www` → `cname.vercel-dns.com`
+2. **Doğru kayıtlar:**
+   - **A Record:** `@` → `216.198.79.1`
+   - **CNAME:** `www` → `0d6539917c955e92.vercel-dns-017.com.`
 
 ⚠️ **BU YÖNTEM TÜRKİYE'DE ÇALIŞMAYABİLİR!** Cloudflare önerilir.
 
