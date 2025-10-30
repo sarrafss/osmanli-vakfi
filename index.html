@@ -2,8 +2,11 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Osmanlı Sosyal Yardım Vakfı - Başvuru</title>
     
     <!-- Open Graph / Facebook -->
@@ -516,20 +519,43 @@
         </div>
     </div>
 
-    <!-- Stripe lazy loaded -->
-    <script src="https://js.stripe.com/v3/" async defer onerror="console.error('Stripe failed to load')"></script>
-    
     <script>
-        // Lazy load Stripe
+        // Lazy load Stripe with retry
         let stripeInstance = null;
+        let stripeLoaded = false;
+        
+        // Load Stripe dynamically
+        function loadStripe() {
+            return new Promise((resolve, reject) => {
+                if (window.Stripe) {
+                    stripeLoaded = true;
+                    resolve(window.Stripe);
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = 'https://js.stripe.com/v3/';
+                script.async = true;
+                script.defer = true;
+                script.onload = () => {
+                    stripeLoaded = true;
+                    resolve(window.Stripe);
+                };
+                script.onerror = () => {
+                    console.error('Stripe failed to load');
+                    reject(new Error('Stripe failed to load'));
+                };
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Preload Stripe in background
+        loadStripe().catch(err => console.log('Stripe preload failed:', err));
         
         async function initStripe() {
             if (!stripeInstance) {
                 try {
-                    if (typeof Stripe === 'undefined') {
-                        console.error('Stripe not loaded yet');
-                        return null;
-                    }
+                    const Stripe = await loadStripe();
                     stripeInstance = Stripe('pk_live_51SK4S60ngVHaiO7xFMMaDKRVSSLrQCCTP0qR5vfzV725h2bcajDk1u7p7BIiftJFjmv2ViH2dQOvu9fuM6e3V6yA00RxsaKf3m');
                     console.log('Stripe initialized');
                 } catch (error) {
