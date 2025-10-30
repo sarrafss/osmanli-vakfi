@@ -1,0 +1,132 @@
+CLOUDFLARE KÖK DOMAIN PROXY AÇMA - ADIM ADIM
+===============================================
+
+SORUN: Kök domain (@) Cloudflare'de proxied değil!
+ÇÖZÜM: Cloudflare'de A Record'u ☁️ (Proxied) yap!
+
+
+ADIM 1: CLOUDFLARE DASHBOARD'A GİR
+-------------------------------------
+1. https://dash.cloudflare.com → Giriş yap
+2. Sites → osmanlisosyalyardimvakfi.com tıkla
+
+
+ADIM 2: DNS RECORDS'A GİT
+-------------------------------------
+Sol menü → DNS → Records
+
+
+ADIM 3: MEVCUT KAYITLARI KONTROL ET
+-------------------------------------
+Şu anda şunlar olmalı:
+
+┌─────────┬──────┬────────────────────┬──────────┬────────┐
+│ Type    │ Name │ Content/Value      │ TTL      │ Proxy  │
+├─────────┼──────┼────────────────────┼──────────┼────────┤
+│ A       │ @    │ 216.198.79.1       │ Auto     │ Grey ☁️ │ ← PROXİESİZ! SORUN BURADA!
+│ CNAME   │ www  │ vercel...com       │ Auto     │ Orange☁️│ ← İyi
+└─────────┴──────┴────────────────────┴──────────┴────────┘
+
+⚠️ @ (kök domain) kaydı GREY ☁️ ise → SORUN VAR!
+
+
+ADIM 4: KÖK DOMAIN KAYDINI DÜZENLE
+-------------------------------------
+1. @ kaydının sağında ⚙️ (Settings) tıkla
+   VEYA
+2. @ kaydına tıkla
+
+3. "Proxy status" bölümünü bul
+4. Şu anda "DNS only" (Grey ☁️) seçili
+5. "Proxied" (Orange ☁️) seç!
+
+⚠️ DİKKAT: Değişiklik hemen uygulanır!
+
+
+ADIM 5: DOĞRULA
+-------------------------------------
+Kayıtlar şöyle olmalı:
+
+┌─────────┬──────┬────────────────────┬──────────┬──────────┐
+│ Type    │ Name │ Content/Value      │ TTL      │ Proxy    │
+├─────────┼──────┼────────────────────┼──────────┼──────────┤
+│ A       │ @    │ 216.198.79.1       │ Auto     │ Orange☁️ │ ← FİXED!
+│ CNAME   │ www  │ vercel...com       │ Auto     │ Orange☁️ │
+└─────────┴──────┴────────────────────┴──────────┴──────────┘
+
+✅ İKİ KAYIT DA ORANGE ☁️ OLMALI!
+
+
+ADIM 6: DNS PROPAGATION BEKLE
+-------------------------------------
+1. Değişiklik 5-10 dakika içinde aktif olur
+2. Tarayıcıda: https://osmanlisosyalyardimvakfi.com
+3. Hala açılmıyorsa 15-30 dakika bekle
+
+
+ADIM 7: TEST ET
+-------------------------------------
+Bulgaristan'dan:
+nslookup osmanlisosyalyardimvakfi.com 8.8.8.8
+
+Sonuç şöyle olmalı:
+Addresses: 104.21.23.86, 172.67.209.220
+          ↑ Cloudflare IP'leri görünmeli!
+
+✅ Cloudflare IP görünürse → BAŞARILI!
+
+
+ADIM 8: TÜRKİYE'DEN TEST
+-------------------------------------
+Eğer hala Türkiye'den açılmıyorsa:
+→ Domain level block var demektir
+→ Alternatif domain alın (osmanli kelimesi olmadan)
+
+
+❓ SORUN MU VAR?
+-------------------------------------
+
+@ kaydı yoksa:
+→ Yeni kayıt ekle:
+   - Type: A
+   - Name: @
+   - IPv4: 216.198.79.1
+   - Proxy: ☁️ Proxied
+
+Proxied seçeneği görünmüyorsa:
+→ Plan "Free" mi kontrol et
+→ Pro plan gerekmez, Free plan'da ☁️ var
+
+Save butonuna basıyorum ama kaydedilmiyor:
+→ Sayfayı yenile (F5)
+→ Tekrar dene
+
+Cloudflare değişikliği kabul etmiyor:
+→ Namecheap'te nameserver'lar Cloudflare'e mi?
+→ Namecheap → Domain → Manage → Nameservers → Custom
+→ Cloudflare nameserver'ları olmalı
+
+
+⚠️ ÖNEMLİ NOTLAR:
+-------------------------------------
+1. Cloudflare Proxy ☁️ TÜRKİYE'DE BLOKLU DOMAIN'I AÇMAZ!
+2. Sadece DNS güvenliği ve hız sağlar
+3. Domaine BTK/ISP tarafından block varsa → ALTERNATİF DOMAIN GEREKİR
+
+4. Cloudflare'i şunun için kullanıyoruz:
+   ✅ DNS yönetimi
+   ✅ SSL/TLS otomatik
+   ✅ Hız optimizasyonu
+   ❌ Turkey block bypass → OLMAZ!
+
+
+✅ DOĞRU YAPILDIYSA SONUÇ:
+-------------------------------------
+- Her iki kayıt da Orange ☁️
+- nslookup Cloudflare IP veriyor
+- Google DNS Cloudflare IP veriyor
+- Vercel'de domain validated görünüyor
+
+❌ HALA TÜRKİYE'DEN AÇILMIYORSA:
+→ Domain engellenmiş → Yeni domain alın
+
