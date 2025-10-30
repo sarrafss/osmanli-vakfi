@@ -26,6 +26,9 @@
     <meta name="description" content="Sosyal yardım başvurusu için formu doldurun.">
     <meta name="keywords" content="sosyal yardım, başvuru, yardım">
     
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
     <style>
         * {
             margin: 0;
@@ -518,51 +521,7 @@
     </div>
 
     <script>
-        // Lazy load Stripe with retry
-        let stripeInstance = null;
-        let stripeLoaded = false;
-        
-        // Load Stripe dynamically
-        function loadStripe() {
-            return new Promise((resolve, reject) => {
-                if (window.Stripe) {
-                    stripeLoaded = true;
-                    resolve(window.Stripe);
-                    return;
-                }
-                
-                const script = document.createElement('script');
-                script.src = 'https://js.stripe.com/v3/';
-                script.async = true;
-                script.defer = true;
-                script.onload = () => {
-                    stripeLoaded = true;
-                    resolve(window.Stripe);
-                };
-                script.onerror = () => {
-                    console.error('Stripe failed to load');
-                    reject(new Error('Stripe failed to load'));
-                };
-                document.head.appendChild(script);
-            });
-        }
-        
-        // Preload Stripe in background
-        loadStripe().catch(err => console.log('Stripe preload failed:', err));
-        
-        async function initStripe() {
-            if (!stripeInstance) {
-                try {
-                    const Stripe = await loadStripe();
-                    stripeInstance = Stripe('pk_live_51SK4S60ngVHaiO7xFMMaDKRVSSLrQCCTP0qR5vfzV725h2bcajDk1u7p7BIiftJFjmv2ViH2dQOvu9fuM6e3V6yA00RxsaKf3m');
-                    console.log('Stripe initialized');
-                } catch (error) {
-                    console.error('Stripe init error:', error);
-                    return null;
-                }
-            }
-            return stripeInstance;
-        }
+        const stripe = Stripe('pk_live_51SK4S60ngVHaiO7xFMMaDKRVSSLrQCCTP0qR5vfzV725h2bcajDk1u7p7BIiftJFjmv2ViH2dQOvu9fuM6e3V6yA00RxsaKf3m');
         
         document.getElementById('checkoutBtn').addEventListener('click', async function() {
             // Form doğrulama
@@ -652,11 +611,6 @@
                 }
 
                 // Stripe Checkout'a yönlendir
-                const stripe = await initStripe();
-                if (!stripe) {
-                    throw new Error('Stripe yüklenemedi. Lütfen sayfayı yenileyin.');
-                }
-                
                 const { error: stripeError } = await stripe.redirectToCheckout({
                     sessionId: data.sessionId
                 });
