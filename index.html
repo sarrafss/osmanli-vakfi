@@ -555,6 +555,8 @@
                 // API endpoint için tam URL oluştur
                 const apiUrl = '/api/create-checkout-session';
                 
+                console.log('📤 API request starting...', apiUrl);
+                
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
@@ -572,12 +574,16 @@
                     })
                 });
 
+                console.log('📥 Response status:', response.status);
+                
                 // Response kontrolü
                 if (!response.ok) {
+                    console.error('❌ HTTP Error:', response.status, response.statusText);
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
                 const data = await response.json();
+                console.log('✅ Data received:', data);
                 
                 if (!data.sessionId) {
                     throw new Error(data.error || 'Stripe session oluşturulamadı');
